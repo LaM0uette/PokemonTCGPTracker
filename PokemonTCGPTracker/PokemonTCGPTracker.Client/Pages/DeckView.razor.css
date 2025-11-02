@@ -45,6 +45,8 @@
 
     top: -347px;
     left: -681px;
+
+    image-rendering: pixelated;
 }
 
 .deck-cards-2 {
@@ -65,6 +67,8 @@
 
     top: -637px;
     left: -685px;
+
+    image-rendering: pixelated;
 }
 
 
