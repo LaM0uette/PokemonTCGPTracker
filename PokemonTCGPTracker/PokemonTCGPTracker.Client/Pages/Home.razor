@@ -1,7 +1,86 @@
 ﻿@page "/"
+@inherits HomeBase
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="home">
+    @if (Stats is null)
+    {
+        <div class="loading">Loading…</div>
+    }
+    else
+    {
+        Rank rank = RankTracker.GetRank(Stats.Points);
+        string rankName = RankTracker.GetName(rank);
+        
+        <section class="rank-card">
+            <div class="rank-left">
+                <img src="@GetRankImage(rank)" alt="@rankName" class="rank-icon" />
+            </div>
+            <div class="rank-info">
+                <div class="rank-label">@rankName</div>
+                <div class="points"><span class="points-value">@Stats.Points</span> pts</div>
+                <div class="streak">Win streak: <strong>@Stats.WinStreaks</strong></div>
+            </div>
+        </section>
 
-Welcome to your new app.
+        <section class="stats-grid">
+            <div class="stat">
+                <div class="stat-value">@Stats.Wins</div>
+                <div class="stat-label">Wins</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">@Stats.Looses</div>
+                <div class="stat-label">Losses</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">@Stats.Ties</div>
+                <div class="stat-label">Ties</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">@Stats.WinStreaks</div>
+                <div class="stat-label">Streak</div>
+            </div>
+        </section>
+
+        <section class="actions">
+            <button class="btn primary" @onclick="Win">Win</button>
+            <button class="btn neutral" @onclick="Tie">Tie</button>
+            <button class="btn danger" @onclick="Loose">Loose</button>
+        </section>
+
+        <details class="advanced">
+            <summary>Advanced settings</summary>
+            <div class="advanced-grid">
+                <label>
+                    <span>Wins</span>
+                    <input type="number" @bind="Wins" />
+                    <button class="btn tiny" @onclick="(() => SetWins(Wins))">Set</button>
+                </label>
+                <label>
+                    <span>Losses</span>
+                    <input type="number" @bind="Looses" />
+                    <button class="btn tiny" @onclick="(() => SetLooses(Looses))">Set</button>
+                </label>
+                <label>
+                    <span>Ties</span>
+                    <input type="number" @bind="Ties" />
+                    <button class="btn tiny" @onclick="(() => SetTies(Ties))">Set</button>
+                </label>
+                <label>
+                    <span>Points</span>
+                    <input type="number" @bind="Points" />
+                    <button class="btn tiny" @onclick="(() => SetPoints(Points))">Set</button>
+                </label>
+                <label>
+                    <span>Win Streaks</span>
+                    <input type="number" @bind="WinStreaks" />
+                    <button class="btn tiny" @onclick="(() => SetWinStreaks(WinStreaks))">Set</button>
+                </label>
+            </div>
+            <div class="advanced-actions">
+                <button class="btn" @onclick="(() => SetAll(Wins, Looses, Ties, Points, WinStreaks))">Set all</button>
+            </div>
+        </details>
+    }
+</div>

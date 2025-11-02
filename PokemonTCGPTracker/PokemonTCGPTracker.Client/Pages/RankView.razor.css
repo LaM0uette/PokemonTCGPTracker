@@ -1,0 +1,101 @@
+﻿.rank-container {
+    width: 365px;
+    height: 1080px;
+    
+    font-family: var(--font-bold), sans-serif;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    
+    background-color: #323039;
+}
+
+    .rank-container__points {
+        width: 100%;
+
+        margin-top: 4rem;
+
+        font-family: var(--font-extra-bold), sans-serif;
+        font-size: 7rem;
+        color: var(--bg);
+
+        text-align: center;
+    }
+
+ 
+.rank {
+    width: 100%;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 2rem;
+
+    padding-top: 3rem;
+    box-sizing: border-box;
+}
+
+    .rank__icon {
+        width: 230px;
+        height: 230px;
+    }
+    
+    .rank__name {
+        width: 100%;
+        
+        font-family: var(--font-extra-bold), sans-serif;
+        font-size: 2.6rem;
+        color: var(--bg);
+        
+        text-align: center;
+    }
+    
+    
+.rank-stats {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 1.8rem;
+
+    padding-top: 3rem;
+    box-sizing: border-box;
+}
+
+.rank-stat {
+    width: 235px;
+
+    padding: 10px 20px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+
+    border-image: url('img/stat-bg.svg') 10 10 10 10 fill / 10px 10px 10px 10px;
+
+    text-shadow: var(--shadow-l);
+    color: var(--bg);
+}
+    .rank-stat--large {
+        width: 320px;
+    }
+
+    .rank-stat__value {
+        font-family: var(--font-extra-bold), sans-serif;
+        font-size: 2.8rem;
+        text-align: center;
+    }
+
+    .rank-stat__txt {
+        font-family: var(--font-bold), sans-serif;
+        font-size: 1.6rem;
+        text-align: center;
+    }

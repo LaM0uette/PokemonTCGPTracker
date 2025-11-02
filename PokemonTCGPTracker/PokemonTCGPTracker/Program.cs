@@ -1,5 +1,11 @@
 using Microsoft.AspNetCore.HttpOverrides;
+using PokemonTCGPTracker.Client.Services;
 using PokemonTCGPTracker.Components;
+using PokemonTCGPTracker.Endpoints;
+using PokemonTCGPTracker.FakeServices;
+using PokemonTCGPTracker.Hubs;
+using PokemonTCGPTracker.Services;
+using RankTracker;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +20,16 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddSignalR();
+
+
+// Dependency Injection server
+builder.Services.AddScoped<IStatsService, JsonStatsService>();
+builder.Services.AddScoped<IRankService, RankService>();
+builder.Services.AddScoped<IRankTracker, RankTracker.RankTracker>();
+
+// Dependency Injection client
+builder.Services.AddScoped<IStatsHubClient, FakeStatsHubClient>();
+
 
 WebApplication app = builder.Build();
 
@@ -37,5 +53,8 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(PokemonTCGPTracker.Client._Imports).Assembly);
+
+app.MapHub<StatsHub>("/hubs/stats");
+app.MapStatsEndpoint();
 
 app.Run();

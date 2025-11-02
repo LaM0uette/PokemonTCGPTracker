@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonTCGPTracker", "Pokem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonTCGPTracker.Client", "PokemonTCGPTracker\PokemonTCGPTracker.Client\PokemonTCGPTracker.Client.csproj", "{5264B3D8-8D7E-4718-A09E-C0AB6A932E0F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonTCGPTracker.Shared", "PokemonTCGPTracker.Shared\PokemonTCGPTracker.Shared.csproj", "{3028E599-7EE2-433A-9667-2D29F9162A6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{5264B3D8-8D7E-4718-A09E-C0AB6A932E0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5264B3D8-8D7E-4718-A09E-C0AB6A932E0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5264B3D8-8D7E-4718-A09E-C0AB6A932E0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3028E599-7EE2-433A-9667-2D29F9162A6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3028E599-7EE2-433A-9667-2D29F9162A6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3028E599-7EE2-433A-9667-2D29F9162A6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3028E599-7EE2-433A-9667-2D29F9162A6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
