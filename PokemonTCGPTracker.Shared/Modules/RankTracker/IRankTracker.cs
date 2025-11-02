@@ -6,6 +6,8 @@ public interface IRankTracker
     Rank GetNextRank(Rank rank);
     
     int GetWinsToNextRank(Rank rank, int currentPoints, int streak);
+    int GetNextHundredPoints(int points);
+    int GetWinsToNextHundred(Rank rank, int currentPoints, int streak);
     
     string GetName(Rank rank);
     int GetThreshold(Rank rank);

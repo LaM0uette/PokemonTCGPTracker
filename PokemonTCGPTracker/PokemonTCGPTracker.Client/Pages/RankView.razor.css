@@ -3,7 +3,7 @@
 .rank-container {
     position: relative;
 
-    width: 675px;
+    width: 700px;
     height: 800px;
     
     font-family: var(--font-bold), sans-serif;
@@ -143,10 +143,8 @@
     width: 100%;
     text-align: center;
 
-    margin-top: 0.1em;
-
     font-family: var(--font-bold), sans-serif;
-    font-size: 2.8rem;
+    font-size: 2.5rem;
     
     background: var(--color-primary-gradient);
     -webkit-background-clip: text;
@@ -156,16 +154,54 @@
 }
 
 
-.rank-container__points {
+.rank-points-live-score {
+    width: 100%;
+    text-align: center;
+
+    font-size: 1.74rem;
+    font-family: var(--font-bold), sans-serif;
+    color: var(--color-text);
+}
+
+.rank-points-live-score--color-gretter {
+    color: var(--color-success);
+}
+
+.rank-points-live-score--color-lower {
+    color: var(--color-danger);
+}
+
+
+.rank-points__points {
     width: 100%;
 
-    margin-top: 4rem;
-
     font-family: var(--font-bold), sans-serif;
-    font-size: 7rem;
-    color: var(--bg);
+    font-size: 10rem;
+    color: var(--color-text);
 
     text-align: center;
+}
+
+
+.rank-points-hundred-remaining {
+    width: 100%;
+    text-align: center;
+
+    font-family: var(--font-bold), sans-serif;
+    font-size: 1.6rem;
+
+    color: var(--color-text);
+}
+
+.rank-points-hundred-remaining-value {
+    font-family: var(--font-bold), sans-serif;
+    font-size: 2rem;
+
+    background: var(--color-primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
 }
 
 /*endregion*/

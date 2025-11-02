@@ -59,11 +59,36 @@ else
                         @nextRankName
                     </p>
                 }
+                
+                <span style="height: 60px"></span>
             
-            
-            
+                @{
+                    int point = Stats.Points;
+                    int pointStarted = Stats.PointsStarted;
+                    
+                    int pointsChange = point - pointStarted;
+                    bool isGretter = pointsChange >= 0;
+        
+                    if (pointsChange == 0)
+                    {
+                        <p class="rank-points-live-score">commencé à @pointStarted.ToString("N0") pts</p>
+                    }
+                    else
+                    {
+                        <p class="rank-points-live-score">commencé à @pointStarted.ToString("N0") pts ( <span class="rank-points-live-score--color-@(isGretter ? "gretter" : "lower")">@(isGretter ? $"+{pointsChange}" : pointsChange)</span> )</p>
+                    }
+                }
 
-                <div class="rank-container__points">@Stats.Points</div>
+                <div class="rank-points__points">@Stats.Points</div>
+                
+                @if (rank is Rank.MasterBall)
+                {
+                    int nextHundred = RankTracker.GetNextHundredPoints(Stats.Points);
+                    int winsToReach = RankTracker.GetWinsToNextHundred(rank, Stats.Points, Stats.WinStreaks);
+        
+                    <span style="height: 40px"></span>
+                    <p class="rank-points-hundred-remaining"><span class="rank-points-hundred-remaining-value">@nextHundred</span> points dans <span class="rank-points-live-score--color-gretter">@winsToReach</span> victoires</p>
+                }
                 
             </div>
 

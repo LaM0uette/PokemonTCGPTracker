@@ -92,6 +92,43 @@ public class RankTracker : IRankTracker
         return wins;
     }
     
+    public int GetNextHundredPoints(int points)
+    {
+        return (points / 100 + 1) * 100;
+    }
+    
+    public int GetWinsToNextHundred(Rank rank, int currentPoints, int streak)
+    {
+        int nextHundred = GetNextHundredPoints(currentPoints);
+        
+        if (nextHundred <= currentPoints)
+            return 0;
+        
+        int pointsNeeded = nextHundred - currentPoints;
+        int wins = 0;
+        int totalPoints = 0;
+        int currentStreak = streak;
+        
+        while (totalPoints < pointsNeeded)
+        {
+            wins++;
+            totalPoints += _baseWinPoints;
+            
+            if (_winStreaksBonusPoints.TryGetValue(currentStreak + 1, out int bonus))
+            {
+                totalPoints += bonus;
+            }
+            else if (currentStreak + 1 > 5)
+            {
+                totalPoints += _winStreaksBonusPoints[5];
+            }
+            
+            currentStreak++;
+        }
+        
+        return wins;
+    }
+    
 
     public string GetName(Rank rank)
     {
