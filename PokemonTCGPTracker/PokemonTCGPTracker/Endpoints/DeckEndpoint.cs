@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Builder;
+using PokemonTCGPTracker.Hubs;
 using System.Security.Cryptography;
 
 namespace PokemonTCGPTracker.Endpoints;
@@ -12,6 +15,8 @@ public static class DeckEndpoint
     public static IEndpointRouteBuilder MapDeckEndpoint(this IEndpointRouteBuilder app)
     {
         RouteGroupBuilder group = app.MapGroup("/deck");
+        // Allow non-browser scripts (e.g., Python) to POST without antiforgery tokens
+        group.DisableAntiforgery();
 
         group.MapPost("/upload", UploadAsync);
         group.MapGet("/version", GetVersionAsync);
@@ -73,7 +78,19 @@ public static class DeckEndpoint
 
         string version = GetFileVersion(path);
         string url = BuildDeckUrl(version, ctx);
-        // Return new full image URL (version encoded server-side)
+
+        // Notify clients via SignalR that the deck image has been updated
+        try
+        {
+            var hub = ctx.RequestServices.GetRequiredService<IHubContext<PokemonTCGPTracker.Hubs.DeckHub>>();
+            await hub.Clients.All.SendAsync("DeckImageUpdated", url, ctx.RequestAborted);
+        }
+        catch
+        {
+            // Ignore notification errors to not break the upload
+        }
+
+        // Return new image URL (version encoded server-side)
         return Results.Ok(new { url });
     }
 

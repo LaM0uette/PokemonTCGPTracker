@@ -2,18 +2,24 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace PokemonTCGPTracker.Client.Pages;
 
-public class DeckViewBase : ComponentBase
+public class DeckViewBase : ComponentBase, IAsyncDisposable
 {
     [Inject] protected HttpClient Http { get; set; } = null!;
+    [Inject] protected NavigationManager Nav { get; set; } = null!;
 
-    protected string DeckImageUrl { get; set; } = "/img/tcgp/deck.png";
+    // Start with a safe inline 1x1 transparent pixel so the client has no knowledge of server paths
+    private const string FallbackDeckImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEA";
+    protected string DeckImageUrl { get; set; } = FallbackDeckImage;
 
     protected IBrowserFile? _selectedFile;
     protected bool _isUploading;
     protected string? _message;
+
+    private HubConnection? _deckHub;
 
     protected override Task OnInitializedAsync()
     {
@@ -26,6 +32,7 @@ public class DeckViewBase : ComponentBase
         if (firstRender && OperatingSystem.IsBrowser())
         {
             await RefreshUrlAsync();
+            await EnsureDeckHubConnectedAsync();
             StateHasChanged();
         }
     }
@@ -106,11 +113,45 @@ public class DeckViewBase : ComponentBase
         }
     }
 
+    private async Task EnsureDeckHubConnectedAsync()
+    {
+        if (_deckHub == null)
+        {
+            Uri url = new Uri(new Uri(Nav.BaseUri), "hubs/deck");
+            _deckHub = new HubConnectionBuilder()
+                .WithUrl(url)
+                .WithAutomaticReconnect()
+                .Build();
+
+            _deckHub.On<string>("DeckImageUpdated", updatedUrl =>
+            {
+                if (!string.IsNullOrWhiteSpace(updatedUrl))
+                {
+                    DeckImageUrl = AddCacheBuster(updatedUrl);
+                    _ = InvokeAsync(StateHasChanged);
+                }
+            });
+        }
+
+        if (_deckHub.State == HubConnectionState.Disconnected)
+        {
+            await _deckHub.StartAsync();
+        }
+    }
+
     private static string AddCacheBuster(string url)
     {
         char sep = url.Contains('?') ? '&' : '?';
         string tick = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
         return $"{url}{sep}r={tick}";
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_deckHub != null)
+        {
+            await _deckHub.DisposeAsync();
+        }
     }
 
     private class UrlDto

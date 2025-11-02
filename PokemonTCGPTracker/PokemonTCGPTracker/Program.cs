@@ -58,6 +58,7 @@ app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(PokemonTCGPTracker.Client._Imports).Assembly);
 
 app.MapHub<StatsHub>("/hubs/stats");
+app.MapHub<DeckHub>("/hubs/deck");
 app.MapStatsEndpoint();
 app.MapDeckEndpoint();
 
