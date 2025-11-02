@@ -1,0 +1,65 @@
+.deck-page {
+    position: relative;
+    min-height: 1400px;
+}
+
+.uploader {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.uploader .msg {
+    margin-left: 8px;
+    color: #6aa84f;
+}
+
+.deck-energy,
+.deck-cards-1,
+.deck-cards-2 {
+    position: absolute;
+    overflow: hidden;
+}
+
+.deck-energy {
+    top: 598px;
+    left: 609px;
+    width: 235px;
+    height: 95px;
+    transform: scale(0.9);
+}
+
+.deck-energy img {
+    position: absolute;
+    top: -455px;
+    left: -2125px;
+}
+
+.deck-cards-1 {
+    top: 593px;
+    left: 418px;
+    width: 1066px;
+    height: 585px;
+    transform: scale(0.57);
+}
+
+.deck-cards-1 img {
+    position: absolute;
+    top: -660px;
+    left: -1360px;
+}
+
+.deck-cards-2 {
+    top: 593px;
+    left: 1025px;
+    width: 1066px;
+    height: 585px;
+    transform: scale(0.57);
+}
+
+.deck-cards-2 img {
+    position: absolute;
+    top: -1241px;
+    left: -1364px;
+}

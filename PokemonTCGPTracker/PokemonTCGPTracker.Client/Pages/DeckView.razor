@@ -1,0 +1,29 @@
+@page "/deck"
+@inherits DeckViewBase
+
+<PageTitle>Deck</PageTitle>
+
+<div class="deck-page">
+    <div class="uploader">
+        <InputFile OnChange="OnFileSelected" />
+        <button class="btn" disabled="@(_selectedFile is null || _isUploading)" @onclick="UploadAsync">
+            @(_isUploading ? "Uploading…" : "Upload deck image")
+        </button>
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <span class="msg">@_message</span>
+        }
+    </div>
+
+    <div class="deck-energy">
+        <img src="@DeckImageUrl" alt="deck energy">
+    </div>
+    
+    <div class="deck-cards-1">
+        <img src="@DeckImageUrl" alt="deck cards 1">
+    </div>
+    
+    <div class="deck-cards-2">
+        <img src="@DeckImageUrl" alt="deck cards 2">
+    </div>
+</div>

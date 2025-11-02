@@ -6,6 +6,7 @@ using PokemonTCGPTracker.FakeServices;
 using PokemonTCGPTracker.Hubs;
 using PokemonTCGPTracker.Services;
 using RankTracker;
+using System.Net.Http;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddSignalR();
 
+// Register HttpClient on the server to satisfy DI for prerendered components
+builder.Services.AddHttpClient();
 
 // Dependency Injection server
 builder.Services.AddScoped<IStatsService, JsonStatsService>();
@@ -56,5 +59,6 @@ app.MapRazorComponents<App>()
 
 app.MapHub<StatsHub>("/hubs/stats");
 app.MapStatsEndpoint();
+app.MapDeckEndpoint();
 
 app.Run();
