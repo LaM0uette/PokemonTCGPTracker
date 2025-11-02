@@ -1,26 +1,137 @@
-.deck-page {
+/*region Deck page*/
+
+.deck-view-page {
     position: relative;
-    min-height: 1400px;
+
+    height: 100%;
+    
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: auto 1fr;
 }
 
-.uploader {
-    margin-bottom: 16px;
+/*endregion*/
+
+
+/*region Description*/
+
+.deck-cards {
+    position: relative;
+    
+    grid-row: 1;
+    
+    padding: 8px;
+    
     display: flex;
+    flex-direction: row;
+}
+
+
+.deck-cards-1 {
+    position: relative;
+
+    width: 534px;
+    height: 295px;
+    
+    overflow: hidden;
+}
+
+.deck-cards-1__img {
+    position: absolute;
+
+    width: 1920px;
+    height: 1080px;
+    object-fit: contain;
+
+    top: -347px;
+    left: -681px;
+}
+
+.deck-cards-2 {
+    position: relative;
+
+    width: 530px;
+    height: 295px;
+    
+    overflow: hidden;
+}
+
+.deck-cards-2__img {
+    position: absolute;
+
+    width: 1920px;
+    height: 1080px;
+    object-fit: contain;
+
+    top: -637px;
+    left: -685px;
+}
+
+
+.deck-cards__border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    border-image: url('img/frame-9slice.svg') 8 8 8 8 fill / 8px 8px 8px 8px;
+    
+    pointer-events: none;
+}
+
+/*endregion*/
+
+
+/*region Deck uploader*/
+
+.deck-uploader {
+    grid-row: 3;
+    
+    width: 100%;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
     align-items: center;
     gap: 8px;
 }
 
-.uploader .msg {
+.deck-uploader__button {
+    padding: 6px 12px;
+    
+    font-family: var(--font-bold), sans-serif;
+    font-size: 1rem;
+    
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    
+    border: none;
+    border-radius: var(--radius-s);
+    
+    cursor: pointer;
+}
+
+.deck-uploader__message {
     margin-left: 8px;
     color: #6aa84f;
 }
 
+/*endregion*/
+
+
+
+
+
+
+
+
+
+
+
+
 .deck-energy,
-.deck-cards-1,
-.deck-cards-2 {
-    position: absolute;
-    overflow: hidden;
-}
+
 
 .deck-energy {
     top: 598px;
@@ -36,30 +147,4 @@
     left: -2125px;
 }
 
-.deck-cards-1 {
-    top: 593px;
-    left: 418px;
-    width: 1066px;
-    height: 585px;
-    transform: scale(0.57);
-}
 
-.deck-cards-1 img {
-    position: absolute;
-    top: -660px;
-    left: -1360px;
-}
-
-.deck-cards-2 {
-    top: 593px;
-    left: 1025px;
-    width: 1066px;
-    height: 585px;
-    transform: scale(0.57);
-}
-
-.deck-cards-2 img {
-    position: absolute;
-    top: -1241px;
-    left: -1364px;
-}

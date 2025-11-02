@@ -3,27 +3,44 @@
 
 <PageTitle>Deck</PageTitle>
 
-<div class="deck-page">
-    <div class="uploader">
-        <InputFile OnChange="OnFileSelected" />
-        <button class="btn" disabled="@(_selectedFile is null || _isUploading)" @onclick="UploadAsync">
-            @(_isUploading ? "Uploading…" : "Upload deck image")
-        </button>
-        @if (!string.IsNullOrEmpty(_message))
-        {
-            <span class="msg">@_message</span>
-        }
+<div class="deck-view-page">
+    
+    <div class="deck-cards">
+        
+        <div class="deck-cards-1">
+            <img class="deck-cards-1__img" src="@DeckImageUrl" alt="deck cards 1">
+        </div>
+    
+        <div class="deck-cards-2">
+            <img class="deck-cards-2__img" src="@DeckImageUrl" alt="deck cards 2">
+        </div>
+        
+        @*<div class="deck-energy">
+            <img src="@DeckImageUrl" alt="deck energy">
+        </div>*@
+        
+        <div class="deck-cards__border"></div>
+
     </div>
 
-    <div class="deck-energy">
-        <img src="@DeckImageUrl" alt="deck energy">
+    
+    <div class="deck-uploader">
+        
+        <InputFile OnChange="@OnFileSelected"/>
+        
+        <button class="deck-uploader__button"
+                disabled="@(SelectedFile is null || IsUploading)"
+                @onclick="UploadAsync">
+            
+            @(IsUploading ? "Uploading…" : "Upload deck image")
+            
+        </button>
+        
+        @if (!string.IsNullOrEmpty(Message))
+        {
+            <span class="deck-uploader__message">@Message</span>
+        }
+        
     </div>
     
-    <div class="deck-cards-1">
-        <img src="@DeckImageUrl" alt="deck cards 1">
-    </div>
-    
-    <div class="deck-cards-2">
-        <img src="@DeckImageUrl" alt="deck cards 2">
-    </div>
 </div>

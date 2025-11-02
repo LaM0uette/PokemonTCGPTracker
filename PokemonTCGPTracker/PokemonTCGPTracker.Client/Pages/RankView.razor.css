@@ -17,7 +17,7 @@
 
         margin-top: 4rem;
 
-        font-family: var(--font-extra-bold), sans-serif;
+        font-family: var(--font-bold), sans-serif;
         font-size: 7rem;
         color: var(--bg);
 
@@ -46,7 +46,7 @@
     .rank__name {
         width: 100%;
         
-        font-family: var(--font-extra-bold), sans-serif;
+        font-family: var(--font-bold), sans-serif;
         font-size: 2.6rem;
         color: var(--bg);
         
@@ -89,7 +89,7 @@
     }
 
     .rank-stat__value {
-        font-family: var(--font-extra-bold), sans-serif;
+        font-family: var(--font-bold), sans-serif;
         font-size: 2.8rem;
         text-align: center;
     }

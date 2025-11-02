@@ -7,6 +7,8 @@ namespace PokemonTCGPTracker.Endpoints;
 
 public static class StatsEndpoint
 {
+    #region Statements
+
     public static IEndpointRouteBuilder MapStatsEndpoint(this IEndpointRouteBuilder app)
     {
         RouteGroupBuilder group = app.MapGroup("/stats");
@@ -17,6 +19,10 @@ public static class StatsEndpoint
 
         return app;
     }
+
+    #endregion
+
+    #region Methods
 
     private static async Task<IResult> WinsAsync(IRankService rankService, IHubContext<StatsHub> hub)
     {
@@ -38,4 +44,6 @@ public static class StatsEndpoint
         await hub.Clients.All.SendAsync("StatsUpdated", stats);
         return Results.Ok(stats);
     }
+
+    #endregion
 }

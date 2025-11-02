@@ -7,9 +7,9 @@
     
     /* Font */
     --font: 'maxxi';
-    --font-bold: 'maxxi-bold';
-    --font-light: 'maxxi-light';
     --font-thin: 'maxxi-thin';
+    --font-light: 'maxxi-light';
+    --font-bold: 'maxxi-bold';
     --font-extras: 'maxxi-extras';
     
     --font2: 'jetBrainsMono', sans-serif;
@@ -33,7 +33,9 @@
     --color-highlight: #d9c8f9;
 
     --color-primary: #b892fe;
+    --color-on-primary: #cfcad9;
     --color-secondary: #ae6c94;
+    --color-on-secondary: #cfcad9;
 
     --color-danger: #ed8072;
     --color-warning: #f7ca80;
@@ -70,7 +72,9 @@
     --color-highlight: #5a4f72;
 
     --color-primary: #b892fe;
+    --color-on-primary: #cfcad9;
     --color-secondary: #6b5b9a;
+    --color-on-secondary: #cfcad9;
 
     --color-danger: #e07466;
     --color-warning: #e4b571;
@@ -95,7 +99,7 @@
 
 :root {
     scrollbar-width: thin;
-    scrollbar-color: var(--secondary) transparent;
+    scrollbar-color: var(--color-secondary) transparent;
 }
 
 :root::-webkit-scrollbar {
@@ -107,17 +111,20 @@
 }
 
 :root::-webkit-scrollbar-thumb {
-    background-color: var(--secondary);
+    background-color: var(--color-secondary);
     border-radius: 4px;
 }
 
 html {
+    height: 100%;
     font-size: 16px;
 }
 
 body {
-    background-color: var(--bg);
-    color: var(--text);
+    height: 100%;
+    
+    background-color: var(--color-bg);
+    color: var(--color-text);
     font-family: var(--font), Tahoma, Geneva, Verdana, sans-serif;
     font-size: 16px;
     cursor: var(--cursor-default);

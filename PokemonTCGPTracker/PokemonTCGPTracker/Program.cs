@@ -6,6 +6,7 @@ using PokemonTCGPTracker.FakeServices;
 using PokemonTCGPTracker.Hubs;
 using PokemonTCGPTracker.Services;
 using RankTracker;
+using DeckRequester;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,7 @@ builder.Services.AddScoped<IRankTracker, RankTracker.RankTracker>();
 
 // Dependency Injection client
 builder.Services.AddScoped<IStatsHubClient, FakeStatsHubClient>();
+builder.Services.AddScoped<IDeckRequester, FakeDeckRequester>();
 
 
 WebApplication app = builder.Build();

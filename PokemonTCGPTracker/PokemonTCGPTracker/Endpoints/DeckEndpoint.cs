@@ -6,6 +6,8 @@ namespace PokemonTCGPTracker.Endpoints;
 
 public static class DeckEndpoint
 {
+    #region Statements
+
     private const string _deckImgRelativePath = "img/tcgp/deck.png";
 
     public static IEndpointRouteBuilder MapDeckEndpoint(this IEndpointRouteBuilder app)
@@ -16,29 +18,24 @@ public static class DeckEndpoint
         group.DisableAntiforgery();
 
         group.MapPost("/upload", UploadAsync);
-        group.MapGet("/version", GetVersion);
         group.MapGet("/url", GetUrl);
         
         return app;
     }
 
-    private static async Task<IResult> UploadAsync(
-        IWebHostEnvironment env,
-        IHubContext<DeckHub> hub,
-        HttpRequest request,
-        CancellationToken ct)
+    #endregion
+
+    #region Methods
+
+    private static async Task<IResult> UploadAsync(IWebHostEnvironment env, IHubContext<DeckHub> hub, HttpRequest request, CancellationToken ct)
     {
         if (!request.HasFormContentType)
         {
             return Results.BadRequest("Content-Type must be multipart/form-data");
         }
 
-        IFormFile? file = request.Form.Files.GetFile("file");
-        if (file is null)
-        {
-            // Try any first file if user did not use name "file"
-            file = request.Form.Files.Count > 0 ? request.Form.Files[0] : null;
-        }
+        // Try any first file if user did not use name "file"
+        IFormFile? file = request.Form.Files.GetFile("file") ?? (request.Form.Files.Count > 0 ? request.Form.Files[0] : null);
         if (file is null)
         {
             return Results.BadRequest("Missing file");
@@ -53,18 +50,19 @@ public static class DeckEndpoint
 
         // Limit size to ~10 MB
         const long maxBytes = 10 * 1024 * 1024;
-        if (file.Length <= 0 || file.Length > maxBytes)
+        if (file.Length is <= 0 or > maxBytes)
         {
             return Results.BadRequest("Invalid file size (max 10MB)");
         }
 
         string dir = Path.Combine(env.WebRootPath, "img", "tcgp");
         Directory.CreateDirectory(dir);
+        
         string path = Path.Combine(dir, "deck.png");
-
-        await using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
+        
+        await using (FileStream fileStream = new(path, FileMode.Create, FileAccess.Write, FileShare.None))
         {
-            await file.CopyToAsync(fs, ct);
+            await file.CopyToAsync(fileStream, ct);
         }
 
         // Ensure timestamp definitely changes even on same-millisecond writes
@@ -94,27 +92,16 @@ public static class DeckEndpoint
         return Results.Ok(new { url });
     }
 
-    private static IResult GetVersion(IWebHostEnvironment env)
-    {
-        string fullPath = Path.Combine(env.WebRootPath, _deckImgRelativePath.Replace('/', Path.DirectorySeparatorChar));
-        string version = GetFileVersion(fullPath);
-        return Results.Ok(new { version });
-    }
-
     private static IResult GetUrl(IWebHostEnvironment env)
     {
         string fullPath = Path.Combine(env.WebRootPath, _deckImgRelativePath.Replace('/', Path.DirectorySeparatorChar));
         string version = GetFileVersion(fullPath);
         string url = BuildDeckUrl(version);
+        
         return Results.Ok(new { url });
     }
-
-    private static string BuildDeckUrl(string version)
-    {
-        // Use relative URL so it works behind reverse proxies as well
-        return $"/{_deckImgRelativePath}?v={version}";
-    }
-
+    
+    
     private static string GetFileVersion(string fullPath)
     {
         try
@@ -122,8 +109,9 @@ public static class DeckEndpoint
             if (File.Exists(fullPath))
             {
                 // Use content hash as version to guarantee change only when bytes change
-                using FileStream fs = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                byte[] hash = SHA256.HashData(fs);
+                using FileStream fileStream = new(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                byte[] hash = SHA256.HashData(fileStream);
+                
                 // Shorten for URL length but keep enough entropy
                 string hex = Convert.ToHexString(hash).ToLowerInvariant();
                 return hex[..16];
@@ -133,7 +121,15 @@ public static class DeckEndpoint
         {
             // ignore
         }
+        
         // fallback to time to force change
         return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
     }
+
+    private static string BuildDeckUrl(string version)
+    {
+        return $"/{_deckImgRelativePath}?v={version}";
+    }
+
+    #endregion
 }

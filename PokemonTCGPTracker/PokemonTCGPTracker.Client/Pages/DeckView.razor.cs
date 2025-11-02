@@ -1,23 +1,27 @@
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.SignalR.Client;
+using DeckRequester;
 
 namespace PokemonTCGPTracker.Client.Pages;
 
 public class DeckViewBase : ComponentBase, IAsyncDisposable
 {
-    [Inject] protected HttpClient Http { get; set; } = null!;
-    [Inject] protected NavigationManager Nav { get; set; } = null!;
+    #region Statements
+    
+    private const string FALLBACK_DECK_IMG = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEA"; // 1x1 transparent pixel
 
-    // Start with a safe inline 1x1 transparent pixel so the client has no knowledge of server paths
-    private const string FallbackDeckImage = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEA";
-    protected string DeckImageUrl { get; set; } = FallbackDeckImage;
+    
+    protected string DeckImageUrl { get; private set; } = FALLBACK_DECK_IMG;
+    
+    [Inject] private NavigationManager _navigationManager { get; set; } = null!;
+    [Inject] private IDeckRequester _deckRequester { get; set; } = null!;
+    
+    
 
-    protected IBrowserFile? _selectedFile;
-    protected bool _isUploading;
-    protected string? _message;
+    protected IBrowserFile? SelectedFile;
+    protected bool IsUploading;
+    protected string? Message;
 
     private HubConnection? _deckHub;
 
@@ -37,59 +41,37 @@ public class DeckViewBase : ComponentBase, IAsyncDisposable
         }
     }
 
+    #endregion
+
+    #region Methods
+
     protected void OnFileSelected(InputFileChangeEventArgs e)
     {
-        _selectedFile = e.File;
-        _message = null;
+        SelectedFile = e.File;
+        Message = null;
     }
 
     protected async Task UploadAsync()
     {
-        if (_selectedFile is null) return;
+        if (SelectedFile is null) return;
         try
         {
-            _isUploading = true;
-            _message = null;
+            IsUploading = true;
+            Message = null;
 
-            using MultipartFormDataContent content = new MultipartFormDataContent();
-            StreamContent sc = new StreamContent(_selectedFile.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024));
-            sc.Headers.ContentType = new MediaTypeHeaderValue(_selectedFile.ContentType);
-            content.Add(sc, "file", _selectedFile.Name);
-
-            HttpResponseMessage res = await Http.PostAsync("/deck/upload", content);
-            if (!res.IsSuccessStatusCode)
-            {
-                _message = $"Upload failed: {(int)res.StatusCode} {res.ReasonPhrase}";
-            }
-            else
-            {
-                try
-                {
-                    var body = await res.Content.ReadFromJsonAsync<UrlDto>();
-                    if (body is not null && !string.IsNullOrWhiteSpace(body.url))
-                    {
-                        DeckImageUrl = AddCacheBuster(body.url);
-                    }
-                    else
-                    {
-                        await RefreshUrlAsync();
-                    }
-                }
-                catch
-                {
-                    await RefreshUrlAsync();
-                }
-                _message = "Uploaded!";
-                StateHasChanged();
-            }
+            await using Stream stream = SelectedFile.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+            string url = await _deckRequester.UploadDeckImageAsync(stream, SelectedFile.Name, SelectedFile.ContentType);
+            DeckImageUrl = AddCacheBuster(url);
+            Message = "Uploaded!";
+            StateHasChanged();
         }
         catch (Exception ex)
         {
-            _message = ex.Message;
+            Message = ex.Message;
         }
         finally
         {
-            _isUploading = false;
+            IsUploading = false;
         }
     }
 
@@ -97,10 +79,10 @@ public class DeckViewBase : ComponentBase, IAsyncDisposable
     {
         try
         {
-            var resp = await Http.GetFromJsonAsync<UrlDto>("/deck/url");
-            if (resp is not null && !string.IsNullOrWhiteSpace(resp.url))
+            string url = await _deckRequester.GetDeckImageUrlAsync();
+            if (!string.IsNullOrWhiteSpace(url))
             {
-                DeckImageUrl = AddCacheBuster(resp.url);
+                DeckImageUrl = AddCacheBuster(url);
             }
             else
             {
@@ -117,7 +99,7 @@ public class DeckViewBase : ComponentBase, IAsyncDisposable
     {
         if (_deckHub == null)
         {
-            Uri url = new Uri(new Uri(Nav.BaseUri), "hubs/deck");
+            Uri url = new Uri(new Uri(_navigationManager.BaseUri), "hubs/deck");
             _deckHub = new HubConnectionBuilder()
                 .WithUrl(url)
                 .WithAutomaticReconnect()
@@ -146,16 +128,19 @@ public class DeckViewBase : ComponentBase, IAsyncDisposable
         return $"{url}{sep}r={tick}";
     }
 
+    #endregion
+
+    #region IAsyncDisposable
+
     public async ValueTask DisposeAsync()
     {
         if (_deckHub != null)
         {
             await _deckHub.DisposeAsync();
         }
+        
+        GC.SuppressFinalize(this);
     }
 
-    private class UrlDto
-    {
-        public string url { get; set; } = string.Empty;
-    }
+    #endregion
 }
