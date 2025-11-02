@@ -18,22 +18,15 @@ public class DeckViewBase : ComponentBase, IAsyncDisposable
     [Inject] private IDeckRequester _deckRequester { get; set; } = null!;
     
     
-
     protected IBrowserFile? SelectedFile;
     protected bool IsUploading;
     protected string? Message;
 
     private HubConnection? _deckHub;
 
-    protected override Task OnInitializedAsync()
-    {
-        // Avoid HTTP calls during server-side prerendering
-        return Task.CompletedTask;
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && OperatingSystem.IsBrowser())
+        if (firstRender) //  && OperatingSystem.IsBrowser()
         {
             await RefreshUrlAsync();
             await EnsureDeckHubConnectedAsync();
@@ -75,19 +68,13 @@ public class DeckViewBase : ComponentBase, IAsyncDisposable
         }
     }
 
+    
     private async Task RefreshUrlAsync()
     {
         try
         {
             string url = await _deckRequester.GetDeckImageUrlAsync();
-            if (!string.IsNullOrWhiteSpace(url))
-            {
-                DeckImageUrl = AddCacheBuster(url);
-            }
-            else
-            {
-                DeckImageUrl = AddCacheBuster("/img/tcgp/deck.png");
-            }
+            DeckImageUrl = AddCacheBuster(!string.IsNullOrWhiteSpace(url) ? url : "/img/tcgp/deck.png");
         }
         catch
         {
@@ -99,7 +86,8 @@ public class DeckViewBase : ComponentBase, IAsyncDisposable
     {
         if (_deckHub == null)
         {
-            Uri url = new Uri(new Uri(_navigationManager.BaseUri), "hubs/deck");
+            Uri url = new(new Uri(_navigationManager.BaseUri), "hubs/deck");
+            
             _deckHub = new HubConnectionBuilder()
                 .WithUrl(url)
                 .WithAutomaticReconnect()
@@ -107,11 +95,11 @@ public class DeckViewBase : ComponentBase, IAsyncDisposable
 
             _deckHub.On<string>("DeckImageUpdated", updatedUrl =>
             {
-                if (!string.IsNullOrWhiteSpace(updatedUrl))
-                {
-                    DeckImageUrl = AddCacheBuster(updatedUrl);
-                    _ = InvokeAsync(StateHasChanged);
-                }
+                if (string.IsNullOrWhiteSpace(updatedUrl)) 
+                    return;
+                
+                DeckImageUrl = AddCacheBuster(updatedUrl);
+                _ = InvokeAsync(StateHasChanged);
             });
         }
 
