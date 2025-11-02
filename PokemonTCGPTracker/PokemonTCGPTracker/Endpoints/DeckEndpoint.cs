@@ -1,8 +1,4 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.AspNetCore.Builder;
 using PokemonTCGPTracker.Hubs;
 using System.Security.Cryptography;
 
@@ -10,32 +6,38 @@ namespace PokemonTCGPTracker.Endpoints;
 
 public static class DeckEndpoint
 {
-    private const string DeckRelativePath = "img/tcgp/deck.png";
+    private const string _deckImgRelativePath = "img/tcgp/deck.png";
 
     public static IEndpointRouteBuilder MapDeckEndpoint(this IEndpointRouteBuilder app)
     {
         RouteGroupBuilder group = app.MapGroup("/deck");
+        
         // Allow non-browser scripts (e.g., Python) to POST without antiforgery tokens
         group.DisableAntiforgery();
 
         group.MapPost("/upload", UploadAsync);
-        group.MapGet("/version", GetVersionAsync);
-        group.MapGet("/url", GetUrlAsync);
+        group.MapGet("/version", GetVersion);
+        group.MapGet("/url", GetUrl);
+        
         return app;
     }
 
-    private static async Task<IResult> UploadAsync(HttpContext ctx)
+    private static async Task<IResult> UploadAsync(
+        IWebHostEnvironment env,
+        IHubContext<DeckHub> hub,
+        HttpRequest request,
+        CancellationToken ct)
     {
-        if (!ctx.Request.HasFormContentType)
+        if (!request.HasFormContentType)
         {
             return Results.BadRequest("Content-Type must be multipart/form-data");
         }
 
-        IFormFile? file = ctx.Request.Form.Files.GetFile("file");
+        IFormFile? file = request.Form.Files.GetFile("file");
         if (file is null)
         {
             // Try any first file if user did not use name "file"
-            file = ctx.Request.Form.Files.Count > 0 ? ctx.Request.Form.Files[0] : null;
+            file = request.Form.Files.Count > 0 ? request.Form.Files[0] : null;
         }
         if (file is null)
         {
@@ -56,14 +58,13 @@ public static class DeckEndpoint
             return Results.BadRequest("Invalid file size (max 10MB)");
         }
 
-        string webRoot = ctx.RequestServices.GetRequiredService<IWebHostEnvironment>().WebRootPath;
-        string dir = Path.Combine(webRoot, "img", "tcgp");
+        string dir = Path.Combine(env.WebRootPath, "img", "tcgp");
         Directory.CreateDirectory(dir);
         string path = Path.Combine(dir, "deck.png");
 
         await using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
         {
-            await file.CopyToAsync(fs, ctx.RequestAborted);
+            await file.CopyToAsync(fs, ct);
         }
 
         // Ensure timestamp definitely changes even on same-millisecond writes
@@ -77,13 +78,12 @@ public static class DeckEndpoint
         }
 
         string version = GetFileVersion(path);
-        string url = BuildDeckUrl(version, ctx);
+        string url = BuildDeckUrl(version);
 
         // Notify clients via SignalR that the deck image has been updated
         try
         {
-            var hub = ctx.RequestServices.GetRequiredService<IHubContext<PokemonTCGPTracker.Hubs.DeckHub>>();
-            await hub.Clients.All.SendAsync("DeckImageUpdated", url, ctx.RequestAborted);
+            await hub.Clients.All.SendAsync("DeckImageUpdated", url, ct);
         }
         catch
         {
@@ -94,27 +94,25 @@ public static class DeckEndpoint
         return Results.Ok(new { url });
     }
 
-    private static async Task<IResult> GetVersionAsync(HttpContext ctx)
+    private static IResult GetVersion(IWebHostEnvironment env)
     {
-        string webRoot = ctx.RequestServices.GetRequiredService<IWebHostEnvironment>().WebRootPath;
-        string fullPath = Path.Combine(webRoot, DeckRelativePath.Replace('/', Path.DirectorySeparatorChar));
+        string fullPath = Path.Combine(env.WebRootPath, _deckImgRelativePath.Replace('/', Path.DirectorySeparatorChar));
         string version = GetFileVersion(fullPath);
         return Results.Ok(new { version });
     }
 
-    private static async Task<IResult> GetUrlAsync(HttpContext ctx)
+    private static IResult GetUrl(IWebHostEnvironment env)
     {
-        string webRoot = ctx.RequestServices.GetRequiredService<IWebHostEnvironment>().WebRootPath;
-        string fullPath = Path.Combine(webRoot, DeckRelativePath.Replace('/', Path.DirectorySeparatorChar));
+        string fullPath = Path.Combine(env.WebRootPath, _deckImgRelativePath.Replace('/', Path.DirectorySeparatorChar));
         string version = GetFileVersion(fullPath);
-        string url = BuildDeckUrl(version, ctx);
+        string url = BuildDeckUrl(version);
         return Results.Ok(new { url });
     }
 
-    private static string BuildDeckUrl(string version, HttpContext ctx)
+    private static string BuildDeckUrl(string version)
     {
         // Use relative URL so it works behind reverse proxies as well
-        return $"/{DeckRelativePath}?v={version}";
+        return $"/{_deckImgRelativePath}?v={version}";
     }
 
     private static string GetFileVersion(string fullPath)

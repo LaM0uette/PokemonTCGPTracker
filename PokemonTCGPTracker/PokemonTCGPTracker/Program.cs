@@ -6,7 +6,6 @@ using PokemonTCGPTracker.FakeServices;
 using PokemonTCGPTracker.Hubs;
 using PokemonTCGPTracker.Services;
 using RankTracker;
-using System.Net.Http;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
