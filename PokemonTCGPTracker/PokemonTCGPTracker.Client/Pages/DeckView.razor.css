@@ -13,7 +13,7 @@
 /*endregion*/
 
 
-/*region Description*/
+/*region Deck Cards*/
 
 .deck-cards {
     position: relative;
@@ -72,6 +72,51 @@
 }
 
 
+.deck-energy {
+    position: absolute;
+
+    padding: 8px;
+
+    top: 250px;
+    left: 950px;
+}
+
+.deck-energy-energies {
+    position: relative;
+    
+    width: 114px;
+    height: 45px;
+
+    overflow: hidden;
+    z-index: 1;
+}
+
+.deck-energy-energies__img {
+    position: absolute;
+
+    width: 1920px;
+    height: 1080px;
+    object-fit: contain;
+
+    top: -248px;
+    left: -1064px;
+
+    image-rendering: pixelated;
+}
+
+.deck-energy__border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    border-image: url('img/frame-9slice.svg') 8 8 8 8 fill / 8px 8px 8px 8px;
+
+    pointer-events: none;
+}
+
+
 .deck-cards__border {
     position: absolute;
     top: 0;
@@ -122,33 +167,3 @@
 }
 
 /*endregion*/
-
-
-
-
-
-
-
-
-
-
-
-
-.deck-energy,
-
-
-.deck-energy {
-    top: 598px;
-    left: 609px;
-    width: 235px;
-    height: 95px;
-    transform: scale(0.9);
-}
-
-.deck-energy img {
-    position: absolute;
-    top: -455px;
-    left: -2125px;
-}
-
-
