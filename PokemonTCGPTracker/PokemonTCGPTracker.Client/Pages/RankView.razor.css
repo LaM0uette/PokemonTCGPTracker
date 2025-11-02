@@ -3,8 +3,8 @@
 .rank-container {
     position: relative;
 
-    width: 700px;
-    height: 800px;
+    width: 575px;
+    height: 665px;
     
     font-family: var(--font-bold), sans-serif;
 
@@ -23,6 +23,8 @@
     grid-column: 1;
     width: 100%;
 
+    align-self: center;
+
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -34,9 +36,9 @@
 
 
 .rank-stat {
-    width: 13em;
-
-    padding: 10px 20px;
+    width: 11em;
+    
+    padding: 6px 20px;
     box-sizing: border-box;
 
     display: flex;
@@ -51,12 +53,13 @@
 }
 
 .rank-stat--large {
-    width: 19em;
+    width: 16em;
+    margin-bottom: 4em;
 }
 
 .rank-stat__value {
     font-family: var(--font-bold), sans-serif;
-    font-size: 3.6rem;
+    font-size: 3rem;
     text-align: center;
     
     color: var(--color-bg);
@@ -64,7 +67,7 @@
 
 .rank-stat__txt {
     font-family: var(--font-bold), sans-serif;
-    font-size: 1.7rem;
+    font-size: 1.5rem;
     text-align: center;
     
     color: var(--color-bg-light);
@@ -176,7 +179,8 @@
     width: 100%;
 
     font-family: var(--font-bold), sans-serif;
-    font-size: 10rem;
+    font-size: 9rem;
+    line-height: 0.8em;
     color: var(--color-text);
 
     text-align: center;
