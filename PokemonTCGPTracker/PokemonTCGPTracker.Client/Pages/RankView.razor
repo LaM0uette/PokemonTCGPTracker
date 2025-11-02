@@ -13,16 +13,6 @@ else
     
     <div class="rank-container">
         
-        <div class="rank">
-            <img class="rank__icon" src="@GetRankImage(rank)" alt="@rankName"/>
-            @if (rank < Rank.MasterBall)
-            {
-                <span class="rank__name">@rankName</span>
-            }
-        </div>
-    
-        <div class="rank-container__points">@Stats.Points</div>
-        
         <div class="rank-stats">
             <div class="rank-stat rank-stat--large">
                 <p class="rank-stat__value">@Stats.WinStreaks.ToString("N0")</p>
@@ -44,6 +34,21 @@ else
                 <p class="rank-stat__txt">Matchs nuls</p>
             </div>
         </div>
-        
+
+        <div class="rank">
+
+            <img class="rank__icon" src="@GetRankImage(rank)" alt="@rankName"/>
+
+            @if (rank < Rank.MasterBall)
+            {
+                <div class="rank-name">
+                    <p class="rank-name__value">@rankName</p>
+                </div>
+            }
+
+            <div class="rank-container__points">@Stats.Points</div>
+
+        </div>
+
     </div>
 }

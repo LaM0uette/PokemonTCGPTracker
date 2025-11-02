@@ -1,60 +1,26 @@
-﻿.rank-container {
-    width: 365px;
-    height: 1080px;
+﻿/* region Rank container */
+
+.rank-container {
+    position: relative;
+
+    width: 675px;
+    height: 800px;
     
     font-family: var(--font-bold), sans-serif;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
+    display: grid;
+    grid-template-columns: auto 1fr;
     
-    background-color: #323039;
+    background-color: transparent;
 }
 
-    .rank-container__points {
-        width: 100%;
+/*endregion*/
 
-        margin-top: 4rem;
 
-        font-family: var(--font-bold), sans-serif;
-        font-size: 7rem;
-        color: var(--bg);
+/* region Rank Stats */
 
-        text-align: center;
-    }
-
- 
-.rank {
-    width: 100%;
-    
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 2rem;
-
-    padding-top: 3rem;
-    box-sizing: border-box;
-}
-
-    .rank__icon {
-        width: 230px;
-        height: 230px;
-    }
-    
-    .rank__name {
-        width: 100%;
-        
-        font-family: var(--font-bold), sans-serif;
-        font-size: 2.6rem;
-        color: var(--bg);
-        
-        text-align: center;
-    }
-    
-    
 .rank-stats {
+    grid-column: 1;
     width: 100%;
 
     display: flex;
@@ -63,12 +29,12 @@
     align-items: flex-start;
     gap: 1.8rem;
 
-    padding-top: 3rem;
     box-sizing: border-box;
 }
 
+
 .rank-stat {
-    width: 235px;
+    width: 13em;
 
     padding: 10px 20px;
     box-sizing: border-box;
@@ -77,25 +43,89 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.6rem;
+    gap: 0.4rem;
 
     border-image: url('img/stat-bg.svg') 10 10 10 10 fill / 10px 10px 10px 10px;
 
-    text-shadow: var(--shadow-l);
-    color: var(--bg);
+    text-shadow: var(--shadow-m);
 }
-    .rank-stat--large {
-        width: 320px;
-    }
 
-    .rank-stat__value {
-        font-family: var(--font-bold), sans-serif;
-        font-size: 2.8rem;
-        text-align: center;
-    }
+.rank-stat--large {
+    width: 19em;
+}
 
-    .rank-stat__txt {
-        font-family: var(--font-bold), sans-serif;
-        font-size: 1.6rem;
-        text-align: center;
-    }
+.rank-stat__value {
+    font-family: var(--font-bold), sans-serif;
+    font-size: 3.6rem;
+    text-align: center;
+    
+    color: var(--color-bg);
+}
+
+.rank-stat__txt {
+    font-family: var(--font-bold), sans-serif;
+    font-size: 1.7rem;
+    text-align: center;
+    
+    color: var(--color-bg-light);
+}
+
+/*endregion*/
+
+
+/* region Rank */
+ 
+.rank {
+    grid-column: 2;
+    width: 100%;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 2rem;
+
+    box-sizing: border-box;
+}
+
+.rank__icon {
+    width: 230px;
+    height: 230px;
+}
+
+
+.rank-name {
+    padding: 6px 32px;
+    box-sizing: border-box;
+
+    border-image: url('img/rank-background.svg') 10 10 10 10 fill / 18px 18px 18px 18px;
+}
+
+.rank-name__value {
+    font-family: var(--font-bold), sans-serif;
+    font-size: 2.6rem;
+    color: var(--bg);
+
+    text-align: center;
+}
+
+/*endregion*/
+
+
+/* region Points */
+
+.rank-container__points {
+    width: 100%;
+
+    margin-top: 4rem;
+
+    font-family: var(--font-bold), sans-serif;
+    font-size: 7rem;
+    color: var(--bg);
+
+    text-align: center;
+}
+
+/*endregion*/
+
+
