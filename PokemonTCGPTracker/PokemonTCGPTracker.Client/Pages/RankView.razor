@@ -45,8 +45,27 @@ else
                     <p class="rank-name__value">@rankName</p>
                 </div>
             }
+            
+            <div class="rank-points">
+                
+                @if (rank is not Rank.MasterBall)
+                {
+                    Rank nextRank = RankTracker.GetNextRank(rank);
+                    string nextRankName = RankTracker.GetName(nextRank);
+                    int winsToNextRank = RankTracker.GetWinsToNextRank(rank, Stats.Points, Stats.WinStreaks);
+                    
+                    <p class="rank-points-remaining"><span class="rank-points-remaining--color-gretter">@winsToNextRank</span> Victoires avant :</p>
+                    <p class="rank-points-remaining-value">
+                        @nextRankName
+                    </p>
+                }
+            
+            
+            
 
-            <div class="rank-container__points">@Stats.Points</div>
+                <div class="rank-container__points">@Stats.Points</div>
+                
+            </div>
 
         </div>
 

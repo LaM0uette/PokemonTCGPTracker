@@ -36,6 +36,8 @@
     --color-on-primary: #cfcad9;
     --color-secondary: #ae6c94;
     --color-on-secondary: #cfcad9;
+    
+    --color-primary-gradient: linear-gradient(60deg, #da8ffe, #a793fe);
 
     --color-danger: #ed8072;
     --color-warning: #f7ca80;
@@ -75,6 +77,8 @@
     --color-on-primary: #cfcad9;
     --color-secondary: #6b5b9a;
     --color-on-secondary: #cfcad9;
+    
+    --color-primary-gradient: linear-gradient(60deg, #a793fe, #da8ffe);
 
     --color-danger: #e07466;
     --color-warning: #e4b571;

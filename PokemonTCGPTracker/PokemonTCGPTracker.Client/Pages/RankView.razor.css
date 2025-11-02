@@ -103,8 +103,8 @@
 
 .rank-name__value {
     font-family: var(--font-bold), sans-serif;
-    font-size: 2.6rem;
-    color: var(--bg);
+    font-size: 2.5rem;
+    color: var(--color-bg);
 
     text-align: center;
 }
@@ -112,7 +112,49 @@
 /*endregion*/
 
 
-/* region Points */
+/* region Rank Points */
+
+.rank-points {
+    width: 100%;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.rank-points-remaining {
+    width: 100%;
+    text-align: center;
+
+    font-family: var(--font-bold), sans-serif;
+    font-size: 1.8rem;
+
+    color: var(--color-text);
+}
+
+.rank-points-remaining--color-gretter {
+    color: var(--color-success);
+}
+
+
+.rank-points-remaining-value {
+    width: 100%;
+    text-align: center;
+
+    margin-top: 0.1em;
+
+    font-family: var(--font-bold), sans-serif;
+    font-size: 2.8rem;
+    
+    background: var(--color-primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+}
+
 
 .rank-container__points {
     width: 100%;

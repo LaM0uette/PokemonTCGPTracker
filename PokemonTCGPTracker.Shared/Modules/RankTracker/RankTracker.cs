@@ -2,6 +2,10 @@ namespace RankTracker;
 
 public class RankTracker : IRankTracker
 {
+    private const int _baseWinPoints = 10;
+    
+    private readonly Dictionary<int, int> _winStreaksBonusPoints = new() { { 0, 0 }, { 1, 0 }, { 2, 3 }, { 3, 6 }, { 4, 9 }, { 5, 12 } };
+    
     private readonly List<(int Threshold, Rank Rank, string Label)> _map =
     [
         (0, Rank.Beginner1, "Débutant 1"),
@@ -40,6 +44,54 @@ public class RankTracker : IRankTracker
         }
         return current;
     }
+    
+    public Rank GetNextRank(Rank rank)
+    {
+        for (int i = 0; i < _map.Count; i++)
+        {
+            if (_map[i].Rank == rank && i + 1 < _map.Count)
+            {
+                return _map[i + 1].Rank;
+            }
+        }
+        
+        return rank;
+    }
+    
+    
+    public int GetWinsToNextRank(Rank rank, int currentPoints, int streak)
+    {
+        Rank nextRank = GetNextRank(rank);
+        int nextThreshold = GetThreshold(nextRank);
+        
+        if (nextThreshold <= currentPoints)
+            return 0;
+        
+        int pointsNeeded = nextThreshold - currentPoints;
+        int wins = 0;
+        int totalPoints = 0;
+        int currentStreak = streak;
+        
+        while (totalPoints < pointsNeeded)
+        {
+            wins++;
+            totalPoints += _baseWinPoints;
+            
+            if (_winStreaksBonusPoints.TryGetValue(currentStreak + 1, out int bonus))
+            {
+                totalPoints += bonus;
+            }
+            else if (currentStreak + 1 > 5)
+            {
+                totalPoints += _winStreaksBonusPoints[5];
+            }
+            
+            currentStreak++;
+        }
+        
+        return wins;
+    }
+    
 
     public string GetName(Rank rank)
     {
