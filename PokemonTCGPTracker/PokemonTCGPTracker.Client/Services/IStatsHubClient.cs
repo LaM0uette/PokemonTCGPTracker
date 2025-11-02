@@ -27,6 +27,9 @@ public interface IStatsHubClient : IAsyncDisposable
     Task<int> GetPoints();
     Task SetPoints(int value);
 
+    Task<int> GetPointsStarted();
+    Task SetPointsStarted(int value);
+
     Task<int> GetWinStreaks();
     Task SetWinStreaks(int value);
 }

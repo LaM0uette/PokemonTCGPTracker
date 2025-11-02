@@ -71,6 +71,9 @@ public class StatsHubClient : IStatsHubClient
     public async Task<int> GetPoints() { await EnsureConnectedAsync(); return await _connection!.InvokeAsync<int>("GetPoints"); }
     public async Task SetPoints(int value) { await EnsureConnectedAsync(); await _connection!.InvokeAsync("SetPoints", value); }
 
+    public async Task<int> GetPointsStarted() { await EnsureConnectedAsync(); return await _connection!.InvokeAsync<int>("GetPointsStarted"); }
+    public async Task SetPointsStarted(int value) { await EnsureConnectedAsync(); await _connection!.InvokeAsync("SetPointsStarted", value); }
+
     public async Task<int> GetWinStreaks() { await EnsureConnectedAsync(); return await _connection!.InvokeAsync<int>("GetWinStreaks"); }
     public async Task SetWinStreaks(int value) { await EnsureConnectedAsync(); await _connection!.InvokeAsync("SetWinStreaks", value); }
 

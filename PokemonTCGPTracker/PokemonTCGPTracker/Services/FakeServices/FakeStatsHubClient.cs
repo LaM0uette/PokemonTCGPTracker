@@ -28,6 +28,9 @@ public class FakeStatsHubClient : IStatsHubClient
     public Task<int> GetPoints() => Task.FromResult(0);
     public Task SetPoints(int value) => Task.CompletedTask;
 
+    public Task<int> GetPointsStarted() => Task.FromResult(0);
+    public Task SetPointsStarted(int value) => Task.CompletedTask;
+
     public Task<int> GetWinStreaks() => Task.FromResult(0);
     public Task SetWinStreaks(int value) => Task.CompletedTask;
     

@@ -87,7 +87,7 @@ public class StatsHub : Hub
         await BroadcastAsync();
     }
 
-    
+
     public async Task<int> GetPoints()
     {
         return await _statsService.GetPointsAsync();
@@ -99,6 +99,17 @@ public class StatsHub : Hub
         await BroadcastAsync();
     }
 
+    public async Task<int> GetPointsStarted()
+    {
+        return await _statsService.GetPointsStartedAsync();
+    }
+
+    public async Task SetPointsStarted(int value)
+    {
+        await _statsService.SetPointsStartedAsync(value);
+        await BroadcastAsync();
+    }
+    
     
     public async Task<int> GetWinStreaks()
     {

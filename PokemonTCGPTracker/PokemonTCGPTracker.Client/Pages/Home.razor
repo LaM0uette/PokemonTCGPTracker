@@ -41,6 +41,10 @@
                 <div class="stat-value">@Stats.WinStreaks</div>
                 <div class="stat-label">Streak</div>
             </div>
+            <div class="stat">
+                <div class="stat-value">@Stats.PointsStarted</div>
+                <div class="stat-label">Points Started</div>
+            </div>
         </section>
 
         <section class="actions">
@@ -73,13 +77,18 @@
                     <button class="btn tiny" @onclick="(() => SetPoints(Points))">Set</button>
                 </label>
                 <label>
+                    <span>Points Started</span>
+                    <input type="number" @bind="PointsStarted" />
+                    <button class="btn tiny" @onclick="(() => SetPointsStarted(PointsStarted))">Set</button>
+                </label>
+                <label>
                     <span>Win Streaks</span>
                     <input type="number" @bind="WinStreaks" />
                     <button class="btn tiny" @onclick="(() => SetWinStreaks(WinStreaks))">Set</button>
                 </label>
             </div>
             <div class="advanced-actions">
-                <button class="btn" @onclick="(() => SetAll(Wins, Looses, Ties, Points, WinStreaks))">Set all</button>
+                <button class="btn" @onclick="(() => SetAll(Wins, Looses, Ties, Points, PointsStarted, WinStreaks))">Set all</button>
             </div>
         </details>
     }

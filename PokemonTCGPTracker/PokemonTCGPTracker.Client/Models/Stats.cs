@@ -7,4 +7,5 @@ public class Stats
     public int Looses { get; set; }
     public int Ties { get; set; }
     public int Points { get; set; }
+    public int PointsStarted { get; set; }
 }

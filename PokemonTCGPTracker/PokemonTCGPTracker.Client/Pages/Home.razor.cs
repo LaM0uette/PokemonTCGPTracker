@@ -14,6 +14,7 @@ public class HomeBase : ComponentBase, IDisposable
     protected int Looses;
     protected int Ties;
     protected int Points;
+    protected int PointsStarted;
     protected int WinStreaks;
     
     [Inject] protected IRankTracker RankTracker { get; set; } = null!;
@@ -68,17 +69,23 @@ public class HomeBase : ComponentBase, IDisposable
         await _statsHubClient.SetPoints(value);
     }
 
+    protected async Task SetPointsStarted(int value)
+    {
+        await _statsHubClient.SetPointsStarted(value);
+    }
+
     protected async Task SetWinStreaks(int value)
     {
         await _statsHubClient.SetWinStreaks(value);
     }
     
-    protected async Task SetAll(int wins, int looses, int ties, int points, int winStreaks)
+    protected async Task SetAll(int wins, int looses, int ties, int points, int pointsStarted, int winStreaks)
     {
         await _statsHubClient.SetWins(wins);
         await _statsHubClient.SetLooses(looses);
         await _statsHubClient.SetTies(ties);
         await _statsHubClient.SetPoints(points);
+        await _statsHubClient.SetPointsStarted(pointsStarted);
         await _statsHubClient.SetWinStreaks(winStreaks);
     }
 
@@ -111,6 +118,7 @@ public class HomeBase : ComponentBase, IDisposable
         Looses = s.Looses;
         Ties = s.Ties;
         Points = s.Points;
+        PointsStarted = s.PointsStarted;
         WinStreaks = s.WinStreaks;
     }
 

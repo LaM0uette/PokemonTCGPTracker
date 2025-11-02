@@ -128,6 +128,19 @@ public class JsonStatsService : IStatsService
         
         await SetAsync(s, cancellationToken);
     }
+
+    public async Task<int> GetPointsStartedAsync(CancellationToken cancellationToken = default)
+    {
+        return (await GetAsync(cancellationToken)).PointsStarted;
+    }
+
+    public async Task SetPointsStartedAsync(int value, CancellationToken cancellationToken = default)
+    {
+        Stats s = await GetAsync(cancellationToken);
+        s.PointsStarted = value;
+        
+        await SetAsync(s, cancellationToken);
+    }
     
     
     

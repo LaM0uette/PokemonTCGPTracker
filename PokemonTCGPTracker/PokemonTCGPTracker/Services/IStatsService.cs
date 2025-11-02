@@ -21,4 +21,7 @@ public interface IStatsService
     
     Task<int> GetPointsAsync(CancellationToken cancellationToken = default);
     Task SetPointsAsync(int value, CancellationToken cancellationToken = default);
+
+    Task<int> GetPointsStartedAsync(CancellationToken cancellationToken = default);
+    Task SetPointsStartedAsync(int value, CancellationToken cancellationToken = default);
 }
