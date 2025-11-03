@@ -59,11 +59,34 @@ public static class DeckEndpoint
         Directory.CreateDirectory(dir);
         
         string path = Path.Combine(dir, "deck.png");
+        string tempPath = Path.Combine(dir, $"deck_{Guid.NewGuid():N}.tmp");
         
-        await using (FileStream fileStream = new(path, FileMode.Create, FileAccess.Write, FileShare.Read))
+        await using (FileStream fileStream = new(tempPath, FileMode.CreateNew, FileAccess.Write, FileShare.None))
         {
             await file.CopyToAsync(fileStream, ct);
-            await fileStream.FlushAsync(ct); // ✅ Force disk write before closing
+            await fileStream.FlushAsync(ct);
+        }
+        
+        try
+        {
+            if (File.Exists(path))
+                File.Replace(tempPath, path, null);
+            else
+                File.Move(tempPath, path);
+        }
+        catch
+        {
+            try
+            {
+                if (File.Exists(tempPath)) File.Delete(tempPath); 
+                
+            } 
+            catch 
+            { 
+                // Ignore
+            }
+            
+            return Results.StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         // Ensure timestamp definitely changes even on same-millisecond writes
