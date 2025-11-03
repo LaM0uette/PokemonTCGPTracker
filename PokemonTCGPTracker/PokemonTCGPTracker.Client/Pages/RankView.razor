@@ -60,7 +60,7 @@ else
                     </p>
                 }
                 
-                <span style="height: 60px"></span>
+                <span style="height: 25px"></span>
             
                 @{
                     int point = Stats.Points;
@@ -71,11 +71,11 @@ else
         
                     if (pointsChange == 0)
                     {
-                        <p class="rank-points-live-score">commencé à @pointStarted.ToString("N0") pts</p>
+                        <p class="rank-points-live-score">@pointStarted.ToString("N0") pts</p>
                     }
                     else
                     {
-                        <p class="rank-points-live-score">commencé à @pointStarted.ToString("N0") pts ( <span class="rank-points-live-score--color-@(isGretter ? "gretter" : "lower")">@(isGretter ? $"+{pointsChange}" : pointsChange)</span> )</p>
+                        <p class="rank-points-live-score">@pointStarted.ToString("N0") pts ( <span class="rank-points-live-score--color-@(isGretter ? "gretter" : "lower")">@(isGretter ? $"+{pointsChange}" : pointsChange)</span> )</p>
                     }
                 }
 
