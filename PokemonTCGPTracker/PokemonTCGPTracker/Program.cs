@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Localization;
 using PokemonTCGPTracker.Client.Services;
 using PokemonTCGPTracker.Components;
 using PokemonTCGPTracker.Endpoints;
@@ -7,6 +8,7 @@ using PokemonTCGPTracker.Hubs;
 using PokemonTCGPTracker.Services;
 using RankTracker;
 using DeckRequester;
+using System.Globalization;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,16 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
     options.KnownNetworks.Clear();
     options.KnownProxies.Clear();
+});
+
+// Localization: force default culture to fr-FR on server (affects prerendering)
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    CultureInfo[] supportedCultures = [ new("fr-FR") ];
+    options.DefaultRequestCulture = new RequestCulture("fr-FR");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
 });
 
 builder.Services.AddRazorComponents()
@@ -50,6 +62,9 @@ else
 
 app.UseHttpsRedirection();
 
+// Apply localization early so it affects formatting during prerender
+RequestLocalizationOptions locOptions = app.Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<RequestLocalizationOptions>>().Value;
+app.UseRequestLocalization(locOptions);
 
 app.UseAntiforgery();
 
