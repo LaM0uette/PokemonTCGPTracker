@@ -13,13 +13,13 @@ public static class DeckEndpoint
     public static IEndpointRouteBuilder MapDeckEndpoint(this IEndpointRouteBuilder app)
     {
         RouteGroupBuilder group = app.MapGroup("/deck");
-        
+
         // Allow non-browser scripts (e.g., Python) to POST without antiforgery tokens
         group.DisableAntiforgery();
 
         group.MapPost("/upload", UploadAsync);
         group.MapGet("/url", GetUrl);
-        
+
         return app;
     }
 
@@ -42,7 +42,7 @@ public static class DeckEndpoint
         }
 
         // Basic validation
-        string contentType = file.ContentType.ToLowerInvariant();
+        string contentType = file.ContentType.Trim().ToLowerInvariant();
         if (!contentType.StartsWith("image/"))
         {
             return Results.BadRequest("Only image files are accepted");
@@ -57,35 +57,44 @@ public static class DeckEndpoint
 
         string dir = Path.Combine(env.WebRootPath, "img", "tcgp");
         Directory.CreateDirectory(dir);
-        
+
         string path = Path.Combine(dir, "deck.png");
         string tempPath = Path.Combine(dir, $"deck_{Guid.NewGuid():N}.tmp");
-        
+
         await using (FileStream fileStream = new(tempPath, FileMode.CreateNew, FileAccess.Write, FileShare.None))
         {
             await file.CopyToAsync(fileStream, ct);
             await fileStream.FlushAsync(ct);
         }
-        
+
         try
         {
             if (File.Exists(path))
-                File.Replace(tempPath, path, null);
-            else
-                File.Move(tempPath, path);
+            {
+                try
+                {
+                    File.Delete(path);
+                }
+                catch
+                {
+                    // ignore delete race
+                }
+            }
+
+            File.Move(tempPath, path, true);
         }
         catch
         {
             try
             {
-                if (File.Exists(tempPath)) File.Delete(tempPath); 
-                
-            } 
-            catch 
-            { 
+                if (File.Exists(tempPath))
+                    File.Delete(tempPath);
+            }
+            catch
+            {
                 // Ignore
             }
-            
+
             return Results.StatusCode(StatusCodes.Status500InternalServerError);
         }
 
@@ -121,11 +130,10 @@ public static class DeckEndpoint
         string fullPath = Path.Combine(env.WebRootPath, _deckImgRelativePath.Replace('/', Path.DirectorySeparatorChar));
         string version = GetFileVersion(fullPath);
         string url = BuildDeckUrl(version);
-        
+
         return Results.Ok(new { url });
     }
-    
-    
+
     private static string GetFileVersion(string fullPath)
     {
         try
@@ -135,7 +143,7 @@ public static class DeckEndpoint
                 // Use content hash as version to guarantee change only when bytes change
                 using FileStream fileStream = new(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 byte[] hash = SHA256.HashData(fileStream);
-                
+
                 // Shorten for URL length but keep enough entropy
                 string hex = Convert.ToHexString(hash).ToLowerInvariant();
                 return hex[..16];
@@ -145,7 +153,7 @@ public static class DeckEndpoint
         {
             // ignore
         }
-        
+
         // fallback to time to force change
         return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
     }
