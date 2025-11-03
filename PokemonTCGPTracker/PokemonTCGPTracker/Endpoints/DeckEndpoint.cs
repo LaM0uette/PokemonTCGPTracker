@@ -60,9 +60,10 @@ public static class DeckEndpoint
         
         string path = Path.Combine(dir, "deck.png");
         
-        await using (FileStream fileStream = new(path, FileMode.Create, FileAccess.Write, FileShare.None))
+        await using (FileStream fileStream = new(path, FileMode.Create, FileAccess.Write, FileShare.Read))
         {
             await file.CopyToAsync(fileStream, ct);
+            await fileStream.FlushAsync(ct); // ✅ Force disk write before closing
         }
 
         // Ensure timestamp definitely changes even on same-millisecond writes
